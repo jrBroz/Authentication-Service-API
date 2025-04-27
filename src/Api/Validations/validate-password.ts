@@ -1,7 +1,7 @@
 import { app } from "../../server"
 import PasswordValidator from "password-validator";
 
-export function validatePassword(password: string)  {
+export function validatePassword(password: string) :  any{
     
     const schema = new PasswordValidator();
 

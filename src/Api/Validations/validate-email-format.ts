@@ -1,6 +1,6 @@
 import { app } from "../../server";
 
-export function validateEmailFormat(email: string) {
+export function validateEmailFormat(email: string) : undefined | boolean {
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
     
