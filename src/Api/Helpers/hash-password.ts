@@ -10,6 +10,8 @@ export async function hashPassword(password: string) : Promise<string> {
 
 export async function verifyPassword(password: string, hashedPassword: string) : Promise<boolean>{
 
+    app.log.info("Initializing process of comparing passwords.");
+
     return await bcrypt.compare(password, hashedPassword);
 
 } 

@@ -1,10 +1,14 @@
 import fastify from "fastify";
 import rateLimit from '@fastify/rate-limit';
-
+import { register } from "./Api/Routes/register";
+import { passwordRecovery } from "./Api/Routes/password-recovery";
+import { login } from "./Api/Routes/login";
 export const app = fastify({logger: true});
+
 
 // Sets rate limit even in 404 routes
 async function main() {
+
 
     app.log.info("Registering Rate-Limit");
 
@@ -22,7 +26,16 @@ async function main() {
     
         reply.code(404).send({message: "Resource Not found."})
     })
-        
+
+    app.register(register, {prefix: '/api'});
+    app.register(login, {prefix: '/api'});
+    app.register(passwordRecovery, {prefix: '/api'});
+
+    app.log.info("Server is up and running.");
+
+
+
+
     app.listen({ port: 3000 }, (error) => {
     
         if(error) {
@@ -32,4 +45,4 @@ async function main() {
     })
 }
 
-main()
+main();

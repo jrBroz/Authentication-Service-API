@@ -1,12 +1,13 @@
 import { app } from "../../server"
 import PasswordValidator from "password-validator";
 
-export function validatePassword(password: string) :  any{
+
+export function validatePasswordStrength(password: string) :  boolean {
     
     const schema = new PasswordValidator();
 
     schema
-    .is().min(8)           
+    .is().min(8, "Password too small.")           
     .is().max(100)          
     .has().uppercase()      
     .has().lowercase()      
@@ -15,7 +16,10 @@ export function validatePassword(password: string) :  any{
     
     app.log.info("Initializing process of validating pasword");
 
-    const validPassword = schema.validate(password);
+    const validPassword = schema.validate(password, {list:true});
 
-    if (validPassword) return validPassword;
+
+    app.log.info("Pasword was validated.");
+
+    return validPassword === true;
 }
