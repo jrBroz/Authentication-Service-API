@@ -5,7 +5,6 @@ import { verifyPassword } from "../Helpers/hash-password";
 
 const prisma = new PrismaClient();
 
-
 export function login() {
 
     app.post('/login', async (request, reply) =>  {
@@ -29,9 +28,7 @@ export function login() {
         if (!isPasswordCorrect) {
             return reply.status(401).send({ message: 'Invalid email or password' });
         }
-    
-    
+        
         reply.send({ message: 'Login successful' });
     });
-
 }

@@ -33,8 +33,6 @@ async function main() {
 
     app.log.info("Server is up and running.");
 
-
-
     app.listen({ port: 3000 }, (error) => {
     
         if(error) {
