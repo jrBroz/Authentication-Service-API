@@ -8,12 +8,12 @@ import { RequestBody } from "../Interface/request-body";
 
 export async function passwordRecovery() { 
     
-    app.post('/password-recovery', (request, reply) =>  {
+    app.post('/password-recovery',async (request, reply) =>  {
 
         const prisma =  new PrismaClient();
         let newPassword = generateNewPassword();
-        const { email} = request.body as RequestBody;
 
+        const { email} = request.body as RequestBody;
         
         prisma.users.update({
             where: {
@@ -25,7 +25,6 @@ export async function passwordRecovery() {
         })
 
         const requestBody = request.body as MailRequestBody
-
         const to = requestBody.to;
 
         const transporter = createTransport({
@@ -44,11 +43,11 @@ export async function passwordRecovery() {
             subject: "Your Password was updated, sending you the new password: ",
             text: newPassword
         };
-
-
-    try {
+    
+        try {
         validateAllEmailFields(mailOptions.to, mailOptions.subject, mailOptions.text);
     
+
         transporter.sendMail(mailOptions, (err) => {
             if (err) {
                 app.log.error("Error Occurred: ", err);

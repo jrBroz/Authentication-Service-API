@@ -22,13 +22,16 @@ export function login() {
         if (!user) {
             return reply.status(401).send({ message: 'Invalid email or password' });
         }
-    
+
         const isPasswordCorrect = await verifyPassword(password, user.password);
     
         if (!isPasswordCorrect) {
             return reply.status(401).send({ message: 'Invalid email or password' });
         }
-        
+
+        const token = app.jwt.sign({email: email}, {expiresIn: '1h'});
+        reply.send({token}); // Will it actually send the token?
+                
         reply.send({ message: 'Login successful' });
     });
 }
