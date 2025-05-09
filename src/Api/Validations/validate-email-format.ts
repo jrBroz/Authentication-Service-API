@@ -8,7 +8,6 @@ export function validateEmailFormat(email: string) : undefined | boolean {
 
     let emailTest = emailRegex.test(email);
 
-
     if (emailTest) {
 
         app.log.info("Email has passed the validation.");

@@ -1,10 +1,13 @@
 import { createTransport } from "nodemailer";
 import { app } from "../../server";
 import { generateNewPassword } from "../Helpers/generate-new-password";
-import { MailRequestBody } from "../Interface/mail-request-body";
 import { validateAllEmailFields } from "../Validations/validateAllEmailFields";
 import { PrismaClient } from "../../generated/prisma";
 import { RequestBody } from "../Interface/request-body";
+import { hashPassword } from "../Helpers/hash-password";
+
+
+const revokedTokens = new Set();
 
 export async function passwordRecovery() { 
     
@@ -14,18 +17,16 @@ export async function passwordRecovery() {
         let newPassword = generateNewPassword();
 
         const { email} = request.body as RequestBody;
-        
-        prisma.users.update({
+        let newHashedPassword = await hashPassword(newPassword);
+
+       await prisma.users.update({
             where: {
                 email: email
             },
             data: {
-                password: newPassword
+                password: newHashedPassword
             }
         })
-
-        const requestBody = request.body as MailRequestBody
-        const to = requestBody.to;
 
         const transporter = createTransport({
 
@@ -39,7 +40,7 @@ export async function passwordRecovery() {
 
         const mailOptions = {        
             from: process.env.FROM,
-            to: to,
+            to: email,
             subject: "Your Password was updated, sending you the new password: ",
             text: newPassword
         };
@@ -47,7 +48,6 @@ export async function passwordRecovery() {
         try {
         validateAllEmailFields(mailOptions.to, mailOptions.subject, mailOptions.text);
     
-
         transporter.sendMail(mailOptions, (err) => {
             if (err) {
                 app.log.error("Error Occurred: ", err);
@@ -57,7 +57,12 @@ export async function passwordRecovery() {
         });
     } catch (error) {
         app.log.error("Validation or Send Error:", error);
-    }    
+    }                  
+
+    // 'Removing' JWT
+    const token = request.headers.authorization?.replace("Bearer", '');
+    if(token) revokedTokens.add(token);
+    
     return { message: 'Password recovery email sent successfully.' };
     });
 }

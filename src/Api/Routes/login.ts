@@ -29,7 +29,7 @@ export function login() {
             return reply.status(401).send({ message: 'Invalid email or password' });
         }
 
-        const token = app.jwt.sign({email: email}, {expiresIn: '1h'});
+        const token = app.jwt.sign({email: email}, {expiresIn: '15 minutes'});
         reply.send({token}); // Will it actually send the token?
                 
         reply.send({ message: 'Login successful' });

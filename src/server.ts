@@ -16,8 +16,7 @@ async function main() {
     await app.register(rateLimit, {
         max: 10,
         timeWindow: '2 minutes'
-    })
-    
+    })    
     app.log.info("Applying Rate-limit on 404 routes.");
 
     // handling 404 
@@ -28,18 +27,24 @@ async function main() {
         reply.code(404).send({message: "Resource Not found."})
     })
 
-    const jwtSecret : string | undefined = process.env.SECRET_KEY;
+
+    app.log.info("Registering helmet.")
+    await app.register(require('@fastify/helmet'))
+    
+    app.log.info("Cors, dns-prefetch-control, frameguard, hide-powered-by, hsts, ienoopen and x-xss-protection applied via helmet");
+
+    const jwtSecret = process.env.SECRET_KEY;
     if (!jwtSecret) {
       throw new Error(".env SECRET_KEY variable is not defined.");
     }
     
-    await  app.register(jwt, { secret: jwtSecret });
+    await app.register(jwt, { secret: jwtSecret });
+
 
     app.register(register, {prefix: '/api'});
     app.register(login, {prefix: '/api'});
-    app.register(passwordRecovery, {prefix: '/api'});
-
-
+    app.register(passwordRecovery, {prefix: '/api'});      
+    
     app.log.info("Server is up and running.");
 
     app.listen({ port: 3000 }, (error) => {

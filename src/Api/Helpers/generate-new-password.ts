@@ -13,6 +13,5 @@ export function generateNewPassword() : string {
         newpassword += integers.at(randomNumber);
         newpassword += exCharacters.at(randomNumber);
     }
-    console.log(newpassword); // debug remove later
     return newpassword;
 }

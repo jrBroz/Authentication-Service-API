@@ -4,16 +4,11 @@ import { checkEmailExists } from "../Validations/check-email-exists";
 import { validateEmailFormat } from "../Validations/validate-email-format";
 import { validatePasswordStrength } from "../Validations/validate-password";
 import { hashPassword } from "../Helpers/hash-password";
+import { RequestBody } from "../Interface/request-body";
 
 
 export async function register() {
 
-    interface RequestBody {
-
-        email: string;
-        password: string
-    }
-    
     const prisma = new PrismaClient();
     
     app.post('/register', async (request, reply) =>  {
